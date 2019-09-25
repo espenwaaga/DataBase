@@ -3,6 +3,7 @@ package no.database.example;
 import java.sql.*;
 
 import static no.database.example.BasicCrudeOperationsUsingJDBC.*;
+
 public class MySQLDBExample {
 
     private static String username = "root";
@@ -25,6 +26,14 @@ public class MySQLDBExample {
         addDataToDB("Apple Inc.", "Cupertino, CA, US", 30000, "http://apple.com");
 
         System.out.println("\n------------------ Data in the employee table: ------------------");
+        getDataFromDB();
+
+        System.out.println("\n------------------ Updating the EmployeeCount of Crunchyfy, LLC ------------------");
+        updateRowInDB(50,"Crunchify, LLC.");
+        getDataFromDB();
+
+        System.out.println("\n------------------ Remove Crunchyfy, LLC from the DataBase ------------------");
+        removeRowInDB("Crunchify, LLC.");
         getDataFromDB();
 
         closeConnectionDB();

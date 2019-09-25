@@ -2,13 +2,14 @@ package no.database.example;
 
 import java.sql.*;
 
-public class BasicCrudeOperationsUsingJDBC {
+class BasicCrudeOperationsUsingJDBC {
 
     static String username = "root";
     static String password = "root";
     static String dbUrl = "jdbc:mysql://localhost:3306/testschema";
     static Connection connection = null;
     static PreparedStatement preparedStatement = null;
+    static ResultSet resultSet = null;
 
     static void makeJDBCConnection() {
         try {
@@ -50,7 +51,7 @@ public class BasicCrudeOperationsUsingJDBC {
 
             preparedStatement = connection.prepareStatement(getQueryStatement);
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 String name = resultSet.getString("Name");
@@ -65,7 +66,32 @@ public class BasicCrudeOperationsUsingJDBC {
         }
     }
 
-    static void cleanOutDB() throws SQLException {
+    static void updateRowInDB (int newEmployeeCount, String name){
+        try{
+            String updateQueryStatement = "Update Employee set EmployeeCount = ? where Name = ?";
+            preparedStatement = connection.prepareStatement(updateQueryStatement);
+            preparedStatement.setInt(1, newEmployeeCount);
+            preparedStatement.setString(2, name);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void removeRowInDB (String name) {
+        try {
+            String removeRowQueryStatement = "Delete from Employee where name = ?";
+            preparedStatement = connection.prepareStatement(removeRowQueryStatement);
+            preparedStatement.setString(1, name);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static void cleanOutDB() {
         try {
             String deleteTableQueryStatement = "DELETE FROM employee";
             preparedStatement = connection.prepareStatement(deleteTableQueryStatement);
@@ -76,6 +102,7 @@ public class BasicCrudeOperationsUsingJDBC {
     }
 
     static void closeConnectionDB() throws SQLException {
+        resultSet.close();
         preparedStatement.close();
         connection.close();
     }
